@@ -34,19 +34,26 @@ SliderSonificationExpAudioProcessor::~SliderSonificationExpAudioProcessor()
 void SliderSonificationExpAudioProcessor::hiResTimerCallback()
 {
 	if (taskInProgress)
+	{
 		timeLeft -= 0.001;
+	}
 }
 
 void SliderSonificationExpAudioProcessor::handleProceedButton()
 {
-	if (timeLeft == 30)
+	if (timeLeft == timeLimit)
 		return;
 
 	switch (interfaceState)
 	{
 	case 1:
-		interfaceState = 2;
-		timeLeft = timeLimit;
+		if (participantName != "" && participantAge != 0 && participantMSoph != 0)
+		{
+			interfaceState = 2;
+			 getNewSonificationIndex();
+			getNewTargetValue();
+			timeLeft = timeLimit;
+		}
 		break;
 	case 2:
 		taskInProgress = false;
@@ -60,50 +67,115 @@ void SliderSonificationExpAudioProcessor::handleProceedButton()
 		interfaceState = 2;
 
 		if (sonificationsElapsed == 20)
+		{
 			saveData();
+			break;
+		}
+		getNewSonificationIndex();
+		getNewTargetValue();
 		break;
 	}
 }
 
-short SliderSonificationExpAudioProcessor::getNextSonificationIndex()
+void SliderSonificationExpAudioProcessor::getNewSonificationIndex()
 {
-	short out = 0;
-	return out;
+	int randomIndex = randGen.nextInt(totalSonifications - 1) + 1;
+	bool alreadyDone = false;
+
+	for (int i = 0; i < totalSonifications; i++)
+	{
+		if (randomIndex == sonificationIndexes_Elapsed[i])
+			alreadyDone = true;
+	} //Check if already done
+
+	while (alreadyDone)
+	{
+		randomIndex = randGen.nextInt(totalSonifications) + 1;
+		alreadyDone = false;
+		for (int i = 0; i < totalSonifications; i++)
+		{
+			if (randomIndex == sonificationIndexes_Elapsed[i])
+				alreadyDone = true;
+		} 
+	}
+	currentSonificationIndex = randomIndex;
+	sonificationIndexes_Elapsed[sonificationsElapsed] = currentSonificationIndex;
 }
 
-float SliderSonificationExpAudioProcessor::getNewTargetValue()
+void SliderSonificationExpAudioProcessor::getNewTargetValue()
 {
-	float out = 0;
-	return out;
+	int valuePre = randGen.nextInt(80);
+	current_Target = (float)(10 + valuePre) / 100.0;
 }
 
-void SliderSonificationExpAudioProcessor::storeParticipantDetails(String name, String age, String omsi)
+void SliderSonificationExpAudioProcessor::storeParticipantDetails(String name, String age, String omsi, String gender)
 {
+	if (name != "")
+	participantName = name;
+	if (age != "")
+	participantAge = age.getIntValue();
+	if (omsi != "")
+	participantMSoph = omsi.getIntValue();
+	if (gender != "")
+	participantGender = gender;
 }
 
 void SliderSonificationExpAudioProcessor::beginSoundTask()
 {
 	taskInProgress = true;
+
+	//mapTargetDistance(0);		//Initialize
 }
 
 void SliderSonificationExpAudioProcessor::mapTargetDistance(float sliderValue)
 {
+	current_ErrorPercent = (sliderValue - current_Target) / current_Target * 100;
+	checkOvershoot(current_ErrorPercent);
+	errorPercent_Prev = current_ErrorPercent;
 }
 
 void SliderSonificationExpAudioProcessor::storeTaskPerformance()
 {
+	task_ErrorPercent[currentSonificationIndex - 1] = current_ErrorPercent;
+	task_timeTaken[currentSonificationIndex - 1] = timeLimit - timeLeft;
+	task_numOvershoots[currentSonificationIndex - 1] = current_NumOvershoots;
+
+	current_NumOvershoots = 0;
 }
 
 void SliderSonificationExpAudioProcessor::storeAestheticRating()
 {
+	task_aestheticRatings[currentSonificationIndex - 1] = current_AestheticRating;
 }
 
 void SliderSonificationExpAudioProcessor::setAestheticRating(float sliderValue)
 {
+	current_AestheticRating = sliderValue;
 }
 
 void SliderSonificationExpAudioProcessor::saveData()
 {
+	int index = 1;
+	struct stat buffer;
+	std::string path = "D:\\Study\\Semester 3\\RSMC\\Participant " + std::to_string(index) + " .csv";
+	while (stat(path.c_str(), &buffer) == 0) // Check File Exists
+	{
+		index++;
+		path = "D:\\Study\\Semester 3\\RSMC\\Participant " + std::to_string(index) + " .csv";
+	}
+
+	expOutcomes = fopen(path.c_str(), "w");
+
+	std::string format_Header = "%s,%d,%c,%d,\n";  //Name,Age,Sex,OMSI
+	std::string format_Body = "%f,%f,%d,%d,\n";			   //ErrorPercent,TimeTaken,NumOvershoots,AestheticRating
+
+	fprintf(expOutcomes, format_Header.c_str(), participantName, participantAge, participantGender, participantMSoph);
+	for (int i = 0; i < totalSonifications; i++)
+	{
+		fprintf(expOutcomes, format_Body.c_str(), 
+			task_ErrorPercent[i],task_timeTaken[i],task_numOvershoots[i],task_aestheticRatings[i]);
+	}
+	fclose(expOutcomes);
 }
 //==============================================================================
 const String SliderSonificationExpAudioProcessor::getName() const

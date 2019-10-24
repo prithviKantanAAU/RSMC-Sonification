@@ -24,6 +24,7 @@ public:
     ~SliderSonificationExpAudioProcessor();
 
 	Random randGen;
+	FILE *expOutcomes;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -65,33 +66,41 @@ public:
 	short currentSonificationIndex = 0;
 	short totalSonifications = 20;
 	short sonificationsElapsed = 0;
-	short elapsedSonificationIndices[50] = { 0 };
-	short getNextSonificationIndex();
 	void handleProceedButton();
 
 	//Callback
 	void hiResTimerCallback();
 	
 	//Personal Details
-	std::string participantName = "";
+	String participantName = "";
+	String participantGender = "";
 	short participantAge = 0;
 	short participantMSoph = 0;
 
 	//Sonification Handling
-	float task_errorPercent[50] = { 0.0 };
+	float task_ErrorPercent[50] = { 0.0 };
 	int task_numOvershoots[50] = { 0 };
 	float task_timeTaken[50] = { 0.0 };
-	float task_aestheticRatings[50] = { 0.0 };
+	int task_aestheticRatings[50] = { 0 };
+	int sonificationIndexes_Elapsed[50] = { 0 };
 
 	bool taskInProgress = false;
 	float current_Target = 0;
-	float current_Error = 0;
-	float current_NumOvershoots = 0.0;
+	float current_ErrorPercent = 0;
+	int current_NumOvershoots = 0;
+	float errorPercent_Prev = 0.0;
 	float current_TimeElapsed = 0.0;
+	int current_AestheticRating = 0;
 	void beginSoundTask();
-	float getNewTargetValue();
+	void checkOvershoot(float currentSliderValue)
+	{
+		if (currentSliderValue * errorPercent_Prev < 0)
+			current_NumOvershoots++;
+	}
+	void getNewSonificationIndex();
+	void getNewTargetValue();
 	void mapTargetDistance(float sliderValue);
-	void storeParticipantDetails(String name, String age, String omsi);
+	void storeParticipantDetails(String name, String age, String omsi, String gender);
 	void storeTaskPerformance();
 	void setAestheticRating(float sliderValue);
 	void storeAestheticRating();

@@ -41,6 +41,7 @@ private:
 	Label nameLabel; TextEditor nameField;
 	Label ageLabel;	TextEditor ageField;
 	Label mSophLabel; TextEditor mSophField;
+	Label genderLabel; TextEditor genderField;
 
 	//Interface Screen 2
 	Label instructions_S2;

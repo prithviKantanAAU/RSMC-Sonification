@@ -49,8 +49,10 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 	next.onClick = [this]
 	{
 		if (currentScreenState == 1)
-		processor.storeParticipantDetails(nameField.getText(),ageField.getText(),mSophField.getText());
-		if (currentScreenState == 2 && processor.timeLeft == 30)
+		{
+				processor.storeParticipantDetails(nameField.getText(), ageField.getText(), mSophField.getText(), genderField.getText());
+		}
+		if (currentScreenState == 2 && processor.timeLeft == processor.timeLimit)
 		toggleTaskNotCompletedWarning(true);
 		processor.handleProceedButton();
 	};
@@ -78,6 +80,11 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 	addAndMakeVisible(mSophField);
 	mSophLabel.attachToComponent(&mSophField, true);
 
+	addAndMakeVisible(genderLabel);
+	genderLabel.setText("Gender (M/F): ", dontSendNotification);
+	addAndMakeVisible(genderField);
+	genderLabel.attachToComponent(&genderField, true);
+
 	addAndMakeVisible(instructions_S2);
 	instructions_S2.setText("Please attempt to locate the target on the slider.",dontSendNotification);
 
@@ -90,6 +97,7 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 	mainTaskSlider.setValue(0);
 	mainTaskSlider.onValueChange = [this]
 	{
+		if (processor.taskInProgress)
 		processor.mapTargetDistance(mainTaskSlider.getValue());
 	};
 	addAndMakeVisible(mainTaskSliderLabel);
@@ -141,7 +149,7 @@ void SliderSonificationExpAudioProcessorEditor::timerCallback()
 	if (currentScreenState == 2 && processor.timeLeft <= 0)
 		processor.handleProceedButton();
 
-	if (processor.sonificationsElapsed >= 20)
+	if (processor.sonificationsElapsed >= processor.totalSonifications)
 	{
 		showConclusionScreen();
 	}
@@ -192,11 +200,13 @@ void SliderSonificationExpAudioProcessorEditor::toggleScreenState(short currentS
 		toggle_S1(false);
 		toggle_S2(true);
 		toggle_S3(false);
+		mainTaskSlider.setValue(0, dontSendNotification);
 		break;
 	case 3:
 		toggle_S1(false);
 		toggle_S2(false);
 		toggle_S3(true);
+		aestheticRating.setValue(4, dontSendNotification);
 		break;
 	}
 }
@@ -210,6 +220,8 @@ void SliderSonificationExpAudioProcessorEditor::toggle_S1(bool on)
 	ageField.setVisible(on);
 	mSophLabel.setVisible(on);
 	mSophField.setVisible(on);
+	genderLabel.setVisible(on);
+	genderField.setVisible(on);
 }
 
 void SliderSonificationExpAudioProcessorEditor::toggle_S2(bool on)
@@ -235,7 +247,7 @@ void SliderSonificationExpAudioProcessorEditor::resized()
 
 	//Interface Screen 1
 	instructions_S1.setBounds(50, 50, 600, 40);
-	nameField.setBounds(50, 100, 200, 40);
+	nameField.setBounds(50, 100, 200, 40); genderField.setBounds(450, 100, 200, 40);
 	ageField.setBounds(50, 160, 200, 40);
 	mSophField.setBounds(50, 220, 80, 40);
 
