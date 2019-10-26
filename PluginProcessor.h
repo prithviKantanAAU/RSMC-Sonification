@@ -11,6 +11,10 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "DspFaust.h"
+#include "Sequencer.h"
+#include "mixerSettings.h"
+#include "FaustStrings.h"
 #include <string>
 
 //==============================================================================
@@ -22,6 +26,82 @@ public:
     //==============================================================================
     SliderSonificationExpAudioProcessor();
     ~SliderSonificationExpAudioProcessor();
+	
+	// Playback Controls //
+	void togglePlayPause();
+	void stopMusic();
+
+	void hiResTimerCallback();
+
+	float tempo = 0;
+	void setTempo(float value)
+	{
+		tempo = value;
+		float intervalMs = 60000 / tempo * 0.25;
+		interPulseIntervalMs = (int)intervalMs;
+		dspFaust.setParamValue(faustStrings.Tempo.c_str(), value);
+	};
+
+	int interPulseIntervalMs = 0.0; float timeElapsed = 0.0; int pulsesElapsed = 0;
+	float lastPulseTime = 0.0; float nextPulseTime = 0.0; bool clockTriggeredLast = false;
+
+	void initializeClocking();
+	bool checkIfPulseDue()
+	{
+		if (timeElapsed >= nextPulseTime)
+			return true;
+		else return false;
+	};
+	void triggerClock(bool polarity);
+	void clockCallback();
+
+	// Music Mapping
+
+	MixerSettings mixerSettings;
+	DspFaust dspFaust;
+	void onStartMusic();
+	void setFilename(String name);
+	void initializeTrackGains();
+	void setTrackGains(int trackIndex, float value);
+	void setTrackMutes(int trackIndex, int value);
+
+	// Music Sequencing
+
+	Sequencer sequencer;
+	void handleNewClockPulse();
+	void applyTimingSwing();
+	//void applyVelocitySwing(int value, float percent);
+
+	// Current Music Info // 0 : Vel // 1 : Scale Degree // 2 : Octave (Mel) OR Type (Chord) 
+	short chordInfo[3] = { 0 };
+	short chordStabsInfo[3] = { 0 };
+	short riffInfo[3] = { 0 };
+	short melInfo[3] = { 0 };
+	short percInfo[4] = { 0 }; // 0 : Kick // 1 : Snare // 2 : HH	
+
+	void fetchNewMusicInfo();
+	void mapNewMusicInfo();
+	void toggleTrackMuteManual(bool muted, short trackNum);
+	short muteValuesManual[8] = { 0 };
+
+	void applyMasterGain(float value);
+	short currentStyle = 0;
+	void applyCurrentStyle(short value);
+	void applyCurrentStyleGains();
+	void applyCurrentStyleEQ();
+	void applyCurrentStyleCompSettings();
+
+	//Sonification
+	bool paramMapped[10][3] = { false };
+	void setParamOn(int category, int index, bool value);
+	void mapDistance(float value);
+
+	//Sonification
+	short numCategories_Targetless = 3;
+	short numSonificationsPerCategory = 10;
+	float currentDistance = 0;
+
+	FaustStrings faustStrings;
 
 	Random randGen;
 	FILE *expOutcomes;
@@ -64,12 +144,9 @@ public:
 	float timeLimit = 30;
 	float timeLeft = 0;
 	short currentSonificationIndex = 0;
-	short totalSonifications = 20;
+	short totalSonifications = 18;
 	short sonificationsElapsed = 0;
 	void handleProceedButton();
-
-	//Callback
-	void hiResTimerCallback();
 	
 	//Personal Details
 	String participantName = "";
@@ -106,7 +183,13 @@ public:
 	void storeAestheticRating();
 	void saveData();
 
-	//Music Control
+	//Sonification Task Specific
+	void initializeMapping();
+	std::string currentMappingString = "";
+	bool isPositivePolarityTraditional[18] = { true, true, true, true, true, true, true, true, true };
+	bool isPositivePolarityMusical[18] = { true, true, true, true, true, true, true, false, false };
+
+	String filePath = "D:\\GaitSonification\\MusicCSVs\\Test 11 Mel.csv";
 
 private:
     //==============================================================================
