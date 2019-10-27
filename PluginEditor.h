@@ -57,6 +57,7 @@ private:
 	Label mainTaskSliderLabel;
 	TextButton startButton;
 	Label targetHint;
+	Label pressSpace;
 
 	//Interface Screen 3
 	Label instructions_S3;

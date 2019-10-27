@@ -27,13 +27,23 @@ SliderSonificationExpAudioProcessor::SliderSonificationExpAudioProcessor()
 	startTimer(1);
 	setTempo(120);
 	initializeClocking();
-	setFilename(filePath);
+	chooseRandomMusicFile();
 }
 
 SliderSonificationExpAudioProcessor::~SliderSonificationExpAudioProcessor()
 {
 	dspFaust.stop();
 	stopTimer();
+}
+
+void SliderSonificationExpAudioProcessor::chooseRandomMusicFile()
+{
+	filePath = currentMelFile.getSpecialLocation(File::currentApplicationFile).getFullPathName();
+	filePath = filePath.upToLastOccurrenceOf("\\", true, false);
+	int currentCSVIndex = randGen.nextInt(5);
+	String currentFile = csvNames[currentCSVIndex];
+	filePath += currentFile;
+	setFilename(filePath);
 }
 
 void SliderSonificationExpAudioProcessor::initializeClocking()
@@ -177,6 +187,11 @@ void SliderSonificationExpAudioProcessor::hiResTimerCallback()
 		pulsesElapsed += 1;
 		pulsesElapsed = pulsesElapsed % 100;
 		timeLeft -= 0.001;
+
+		if (spaceBarContinue.isKeyCurrentlyDown(KeyPress::spaceKey))
+		{
+			handleProceedButton();
+		}
 	}
 }
 
@@ -327,6 +342,7 @@ void SliderSonificationExpAudioProcessor::handleProceedButton()
 			interfaceState = 2;
 			 getNewSonificationIndex();
 			getNewTargetValue();
+			chooseRandomMusicFile();
 			timeLeft = timeLimit;
 		}
 		break;
@@ -349,6 +365,7 @@ void SliderSonificationExpAudioProcessor::handleProceedButton()
 		}
 		getNewSonificationIndex();
 		getNewTargetValue();
+		chooseRandomMusicFile();
 		break;
 	}
 }
@@ -470,11 +487,13 @@ void SliderSonificationExpAudioProcessor::saveData()
 {
 	int index = 1;
 	struct stat buffer;
-	std::string path = "D:\\Study\\Semester 3\\RSMC\\Participant " + std::to_string(index) + " .csv";
+	filePath = currentMelFile.getSpecialLocation(File::currentApplicationFile).getFullPathName();
+	filePath = filePath.upToLastOccurrenceOf("\\", true, false);
+	std::string path = filePath.toStdString() + "Participant " + std::to_string(index) + ".csv";
 	while (stat(path.c_str(), &buffer) == 0) // Check File Exists
 	{
 		index++;
-		path = "D:\\Study\\Semester 3\\RSMC\\Participant " + std::to_string(index) + " .csv";
+		path = filePath.toStdString() + "Participant " + std::to_string(index) + ".csv";
 	}
 
 	expOutcomes = fopen(path.c_str(), "w");

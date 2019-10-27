@@ -99,6 +99,8 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 	addAndMakeVisible(instructions_S2);
 	instructions_S2.setText("Please attempt to locate the target on the slider.",dontSendNotification);
 
+	addAndMakeVisible(pressSpace);
+
 	addAndMakeVisible(targetHint);
 	targetHint.setColour(Label::textColourId, Colours::yellow);
 
@@ -124,6 +126,8 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 	startButton.onClick = [this]
 	{
 		processor.beginSoundTask();
+		startButton.setVisible(false);
+		pressSpace.setVisible(true);
 	};
 
 	//Interface Screen 3
@@ -150,6 +154,8 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 	addAndMakeVisible(conclusionLabel);
 	conclusionLabel.setVisible(false);
 	conclusionLabel.setText("Experiment Complete!", dontSendNotification);
+
+	setLabels_English();
 }
 
 void SliderSonificationExpAudioProcessorEditor::timerCallback()
@@ -213,6 +219,7 @@ void SliderSonificationExpAudioProcessorEditor::setLabels_English()
 	language.setText("English", dontSendNotification);
 	if (currentScreenState == 2 && processor.currentSonificationIndex >= 1 && processor.currentSonificationIndex <= processor.totalSonifications)
 	targetHint.setText(targetHintsEnglish[processor.currentSonificationIndex - 1], dontSendNotification);
+	pressSpace.setText("Press SPACE when you have found the target.", dontSendNotification);
 }
 
 void SliderSonificationExpAudioProcessorEditor::setLabels_Danish()
@@ -221,7 +228,7 @@ void SliderSonificationExpAudioProcessorEditor::setLabels_Danish()
 	TaskStatus.setText("Opgaver Afsluttet: "
 		+ std::to_string(processor.sonificationsElapsed) + "/" + std::to_string(processor.totalSonifications)
 		, dontSendNotification);
-	instructions_S1.setText("Udfyld venligst deres oplysninger :", dontSendNotification);
+	instructions_S1.setText("Udfyld venligst dine personlige detaljer:", dontSendNotification);
 	nameLabel.setText("Navn: ", dontSendNotification);
 	ageLabel.setText("Alder: ", dontSendNotification);
 	mSophLabel.setText("OMSI: ", dontSendNotification);
@@ -237,6 +244,7 @@ void SliderSonificationExpAudioProcessorEditor::setLabels_Danish()
 	language.setText("Dansk", dontSendNotification);
 	if (currentScreenState == 2 && processor.currentSonificationIndex >= 1 && processor.currentSonificationIndex <= processor.totalSonifications)
 	targetHint.setText(targetHintsDanish[processor.currentSonificationIndex - 1],dontSendNotification);
+	pressSpace.setText("Tryk MELLEMRUM naar du har fundet maalet.", dontSendNotification);
 }
 
 void SliderSonificationExpAudioProcessorEditor::showConclusionScreen()
@@ -251,6 +259,7 @@ void SliderSonificationExpAudioProcessorEditor::showConclusionScreen()
 	aestheticRatingLabel.setVisible(false);
 	targetHint.setVisible(false);
 	conclusionLabel.setVisible(true);
+	pressSpace.setVisible(false);
 }
 
 void SliderSonificationExpAudioProcessorEditor::updateTimeRemaining()
@@ -318,6 +327,7 @@ void SliderSonificationExpAudioProcessorEditor::toggle_S2(bool on)
 	mainTaskSliderLabel.setVisible(on);
 	startButton.setVisible(on);
 	targetHint.setVisible(on);
+	next.setVisible(!on);
 	if (on)
 	{
 		if (!isDanish)
@@ -325,6 +335,8 @@ void SliderSonificationExpAudioProcessorEditor::toggle_S2(bool on)
 		else
 			targetHint.setText(targetHintsDanish[processor.currentSonificationIndex - 1], dontSendNotification);
 	}
+	if (pressSpace.isVisible())
+		pressSpace.setVisible(on);
 }
 
 void SliderSonificationExpAudioProcessorEditor::toggle_S3(bool on)
@@ -349,9 +361,10 @@ void SliderSonificationExpAudioProcessorEditor::resized()
 	//Interface Screen 2
 	instructions_S2.setBounds(50, 50, 600, 40);
 	timeLeft.setBounds(50, 90, 600, 40);
-	mainTaskSlider.setBounds(350, 150, 400, 40);
+	mainTaskSlider.setBounds(50, 190, 750, 40);
 	startButton.setBounds(150, 150, 100, 40);
 	targetHint.setBounds(225, 90, 450, 40);
+	pressSpace.setBounds(250, 250, 400, 40);
 
 	//Interface Screen 3
 	instructions_S3.setBounds(50, 50, 600, 40);

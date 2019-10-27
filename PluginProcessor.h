@@ -176,6 +176,7 @@ public:
 	}
 	void getNewSonificationIndex();
 	void getNewTargetValue();
+	void chooseRandomMusicFile();
 	void mapTargetDistance(float sliderValue);
 	void storeParticipantDetails(String name, String age, String omsi, String gender);
 	void storeTaskPerformance();
@@ -183,13 +184,19 @@ public:
 	void storeAestheticRating();
 	void saveData();
 
+	KeyPress spaceBarContinue;
+
 	//Sonification Task Specific
 	void initializeMapping();
 	std::string currentMappingString = "";
 	bool isPositivePolarityTraditional[18] = { true, true, true, true, true, true, true, true, true };
 	bool isPositivePolarityMusical[18] = { true, true, true, true, true, true, true, false, false };
 
-	String filePath = "D:\\GaitSonification\\MusicCSVs\\Test 11 Mel.csv";
+	//String filePath = "D:\\GaitSonification\\MusicCSVs\\Test 11 Mel.csv";
+	String filePath = "";
+	File currentMelFile;
+	String csvNames[5] = {"Test 11 Mel.csv","Test 12 Mel.csv","Test 13 Mel.csv",
+						   "Test 14 Mel.csv", "Test 16 Mel.csv"};
 
 private:
     //==============================================================================
