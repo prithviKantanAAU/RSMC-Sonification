@@ -364,7 +364,7 @@ void SliderSonificationExpAudioProcessor::initializeMapping()
 		valueToMap = isPositivePolarityMusical[i] ? 0 : 1;
 		dspFaust.setParamValue(currentAddress.c_str(),valueToMap);
 	}
-	if (currentSonificationIndex < totalSonifications / 2)
+	if (currentSonificationIndex <= totalSonifications / 2)
 	{
 		currentDistance = current_Target;
 		currentMappingString = faustStrings.getSonificationStringAddress(currentSonificationIndex - 1);
@@ -440,7 +440,8 @@ void SliderSonificationExpAudioProcessor::beginSoundTask()
 void SliderSonificationExpAudioProcessor::mapTargetDistance(float sliderValue)
 {
 	float currentError = abs(sliderValue - current_Target);
-	current_ErrorPercent = (sliderValue - current_Target) / current_Target * 100;
+	current_ErrorPercent = (sliderValue - current_Target) * 100;
+	//current_ErrorPercent = currentError * 100;
 	checkOvershoot(current_ErrorPercent);
 	errorPercent_Prev = current_ErrorPercent;
 	dspFaust.setParamValue(currentMappingString.c_str(),currentError);

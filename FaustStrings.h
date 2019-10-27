@@ -124,7 +124,8 @@ public:
 	{
 		"Basic_Strategies/x_B1_MelBaseFreq",
 		"Basic_Strategies/x_B2_MelLoudness",
-		"Basic_Strategies/x_B4_MelBrightness", //		"Basic_Strategies/x_B5_PercRelTime",
+				"Basic_Strategies/x_B4_MelBrightness", 
+		//		"Basic_Strategies/x_B5_PercRelTime",
 		"Reference_Strategies/x_R1_InstSynch",
 		"Reference_Strategies/x_R2_Inharmonicity",
 		"Reference_Strategies/x_R3_Tremolo",

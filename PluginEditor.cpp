@@ -57,6 +57,17 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 		processor.handleProceedButton();
 	};
 
+	addAndMakeVisible(isDanishToggle);
+	isDanishToggle.setToggleState(false, dontSendNotification);
+	isDanishToggle.onStateChange = [this]
+	{
+		isDanish = isDanishToggle.getToggleState();
+	};
+	addAndMakeVisible(language);
+	language.setText("English", dontSendNotification);
+	language.attachToComponent(&isDanishToggle, true);
+
+
 	addAndMakeVisible(TaskStatus);
 	TaskStatus.setText("Tasks Completed: " 
 		+ std::to_string(processor.sonificationsElapsed) + "/" + std::to_string(processor.totalSonifications)
@@ -87,6 +98,9 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 
 	addAndMakeVisible(instructions_S2);
 	instructions_S2.setText("Please attempt to locate the target on the slider.",dontSendNotification);
+
+	addAndMakeVisible(targetHint);
+	targetHint.setColour(Label::textColourId, Colours::yellow);
 
 	addAndMakeVisible(timeLeft);
 	timeLeft.setText("Time remaining: " + std::to_string((int)processor.timeLeft) + " sec", dontSendNotification);
@@ -163,6 +177,66 @@ void SliderSonificationExpAudioProcessorEditor::timerCallback()
 			taskWarning_Timeout = 0;
 		}
 	}
+
+	if (isDanish != isDanish_z1)
+		handleLanguageChange();
+	isDanish_z1 = isDanish;
+}
+
+void SliderSonificationExpAudioProcessorEditor::handleLanguageChange()
+{
+	if (!isDanish)
+		setLabels_English();
+	else
+		setLabels_Danish();
+}
+
+void SliderSonificationExpAudioProcessorEditor::setLabels_English()
+{
+	next.setButtonText("Proceed");
+	TaskStatus.setText("Tasks Completed: "
+		+ std::to_string(processor.sonificationsElapsed) + "/" + std::to_string(processor.totalSonifications)
+		, dontSendNotification);
+	instructions_S1.setText("Please fill in your personal details:", dontSendNotification);
+	nameLabel.setText("Name: ", dontSendNotification);
+	ageLabel.setText("Age: ", dontSendNotification);
+	mSophLabel.setText("OMSI: ", dontSendNotification);
+	genderLabel.setText("Gender (M/F): ", dontSendNotification);
+	instructions_S2.setText("Please attempt to locate the target on the slider.", dontSendNotification);
+	timeLeft.setText("Time remaining: " + std::to_string((int)processor.timeLeft) + " sec", dontSendNotification);
+	mainTaskSliderLabel.setText("Adjust:", dontSendNotification);
+	startButton.setButtonText("Begin");
+	instructions_S3.setText("Please tell us how pleasant the auditory guidance sounded:", dontSendNotification);
+	aestheticRatingLabel.setText("Pleasantness Rating", dontSendNotification);
+	taskNotCompletedWarning.setText("Task not yet completed.", dontSendNotification);
+	conclusionLabel.setText("Experiment Complete!", dontSendNotification);
+	language.setText("English", dontSendNotification);
+	if (currentScreenState == 2 && processor.currentSonificationIndex >= 1 && processor.currentSonificationIndex <= processor.totalSonifications)
+	targetHint.setText(targetHintsEnglish[processor.currentSonificationIndex - 1], dontSendNotification);
+}
+
+void SliderSonificationExpAudioProcessorEditor::setLabels_Danish()
+{
+	next.setButtonText("Fortsaet");
+	TaskStatus.setText("Opgaver Afsluttet: "
+		+ std::to_string(processor.sonificationsElapsed) + "/" + std::to_string(processor.totalSonifications)
+		, dontSendNotification);
+	instructions_S1.setText("Udfyld venligst deres oplysninger :", dontSendNotification);
+	nameLabel.setText("Navn: ", dontSendNotification);
+	ageLabel.setText("Alder: ", dontSendNotification);
+	mSophLabel.setText("OMSI: ", dontSendNotification);
+	genderLabel.setText("Koen (M/F): ", dontSendNotification);
+	instructions_S2.setText("Forsoeg venligst at finde maalet paa skyderen.", dontSendNotification);
+	timeLeft.setText("Resterende tid : " + std::to_string((int)processor.timeLeft) + " sek", dontSendNotification);
+	mainTaskSliderLabel.setText("Juster:", dontSendNotification);
+	startButton.setButtonText("Begynd");
+	instructions_S3.setText("Fortael os, hvor behagelig den auditive vejledning loed :", dontSendNotification);
+	aestheticRatingLabel.setText("Behagelighed", dontSendNotification);
+	taskNotCompletedWarning.setText("Opgaven er ikke endnu afsluttet.", dontSendNotification);
+	conclusionLabel.setText("Eksperimentet er afsluttet!", dontSendNotification);
+	language.setText("Dansk", dontSendNotification);
+	if (currentScreenState == 2 && processor.currentSonificationIndex >= 1 && processor.currentSonificationIndex <= processor.totalSonifications)
+	targetHint.setText(targetHintsDanish[processor.currentSonificationIndex - 1],dontSendNotification);
 }
 
 void SliderSonificationExpAudioProcessorEditor::showConclusionScreen()
@@ -175,15 +249,27 @@ void SliderSonificationExpAudioProcessorEditor::showConclusionScreen()
 	instructions_S3.setVisible(false);
 	aestheticRating.setVisible(false);
 	aestheticRatingLabel.setVisible(false);
+	targetHint.setVisible(false);
 	conclusionLabel.setVisible(true);
 }
 
 void SliderSonificationExpAudioProcessorEditor::updateTimeRemaining()
 {
-	timeLeft.setText("Time remaining: " + std::to_string((int)processor.timeLeft) + " sec", dontSendNotification);
-	TaskStatus.setText("Tasks Completed: "
-		+ std::to_string(processor.sonificationsElapsed) + "/" + std::to_string(processor.totalSonifications)
-		, dontSendNotification);
+	
+	if (!isDanish)
+	{
+		TaskStatus.setText("Tasks Completed: "
+			+ std::to_string(processor.sonificationsElapsed) + "/" + std::to_string(processor.totalSonifications)
+			, dontSendNotification);
+		timeLeft.setText("Time remaining: " + std::to_string((int)processor.timeLeft) + " sec", dontSendNotification);
+	}
+	else
+	{
+		TaskStatus.setText("Opgaver Afsluttet: "
+			+ std::to_string(processor.sonificationsElapsed) + "/" + std::to_string(processor.totalSonifications)
+			, dontSendNotification);
+		timeLeft.setText("Resterende Tid: " + std::to_string((int)processor.timeLeft) + " sec", dontSendNotification);
+	}
 
 }
 
@@ -231,6 +317,14 @@ void SliderSonificationExpAudioProcessorEditor::toggle_S2(bool on)
 	mainTaskSlider.setVisible(on);
 	mainTaskSliderLabel.setVisible(on);
 	startButton.setVisible(on);
+	targetHint.setVisible(on);
+	if (on)
+	{
+		if (!isDanish)
+			targetHint.setText(targetHintsEnglish[processor.currentSonificationIndex - 1], dontSendNotification);
+		else
+			targetHint.setText(targetHintsDanish[processor.currentSonificationIndex - 1], dontSendNotification);
+	}
 }
 
 void SliderSonificationExpAudioProcessorEditor::toggle_S3(bool on)
@@ -244,6 +338,7 @@ void SliderSonificationExpAudioProcessorEditor::resized()
 {
 	next.setBounds(370,220,80,40);
 	TaskStatus.setBounds(600, 20, 160, 40);
+	isDanishToggle.setBounds(80, 10, 100, 40);
 
 	//Interface Screen 1
 	instructions_S1.setBounds(50, 50, 600, 40);
@@ -256,6 +351,7 @@ void SliderSonificationExpAudioProcessorEditor::resized()
 	timeLeft.setBounds(50, 90, 600, 40);
 	mainTaskSlider.setBounds(350, 150, 400, 40);
 	startButton.setBounds(150, 150, 100, 40);
+	targetHint.setBounds(225, 90, 450, 40);
 
 	//Interface Screen 3
 	instructions_S3.setBounds(50, 50, 600, 40);
