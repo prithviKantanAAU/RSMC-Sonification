@@ -383,7 +383,7 @@ void SliderSonificationExpAudioProcessor::initializeMapping()
 	}
 	if (currentSonificationIndex <= totalSonifications / 2)
 	{
-		currentDistance = current_Target;
+		currentDistance = getParamValueFunction(mappingFunctionTypes[currentSonificationIndex - 1], current_Target);
 		currentMappingString = faustStrings.getSonificationStringAddress(currentSonificationIndex - 1);
 		dspFaust.setParamValue(faustStrings.SonificationTypeToggle.c_str(), 0);
 		dspFaust.setParamValue(currentMappingString.c_str(),currentDistance);
@@ -429,8 +429,8 @@ void SliderSonificationExpAudioProcessor::getNewSonificationIndex()
 
 void SliderSonificationExpAudioProcessor::getNewTargetValue()
 {
-	int valuePre = randGen.nextInt(80);
-	current_Target = (float)(10 + valuePre) / 100.0;
+	int valuePre = randGen.nextInt(30);
+	current_Target = (float)(50 + valuePre) / 100.0;
 }
 
 void SliderSonificationExpAudioProcessor::storeParticipantDetails(String name, String age, String omsi, String gender)
@@ -461,6 +461,7 @@ void SliderSonificationExpAudioProcessor::mapTargetDistance(float sliderValue)
 	//current_ErrorPercent = currentError * 100;
 	checkOvershoot(current_ErrorPercent);
 	errorPercent_Prev = current_ErrorPercent;
+	currentError = getParamValueFunction(mappingFunctionTypes[currentSonificationIndex - 1],currentError);
 	dspFaust.setParamValue(currentMappingString.c_str(),currentError);
 }
 

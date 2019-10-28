@@ -191,6 +191,36 @@ public:
 	std::string currentMappingString = "";
 	bool isPositivePolarityTraditional[18] = { true, true, true, true, true, true, true, true, true };
 	bool isPositivePolarityMusical[18] = { true, true, true, true, true, true, true, false, false };
+	float mappingFunctionTypes[18] =
+	{
+		1,			//Mel Tonic
+		0.3,			//Mel Amp
+		0.2,		//Mel Filter
+		1,			//Perc Sync
+		0.5,		//Mel Inharm
+		0.3,		//Mel Tremolo
+		0.4,		//Mel Dist
+		0.5,			//RZ Effect 1
+		0.5,		//RZ Effect 2
+
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1
+	};
+	//Mapping Function
+	float getParamValueFunction(float mappingFunctionType, float inputValue)
+	{	
+		if (inputValue > 0.01)
+		return pow(inputValue, mappingFunctionType); 
+		else
+		return pow(inputValue, 1/mappingFunctionType);
+	};
 
 	//String filePath = "D:\\GaitSonification\\MusicCSVs\\Test 11 Mel.csv";
 	String filePath = "";
