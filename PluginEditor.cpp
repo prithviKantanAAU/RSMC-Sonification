@@ -120,12 +120,19 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 	mainTaskSliderLabel.setText("Adjust:", dontSendNotification);
 	mainTaskSliderLabel.attachToComponent(&mainTaskSlider, true);
 
+	addAndMakeVisible(trainingOrTask);
+	trainingOrTask.setText("Training Phase",dontSendNotification);
+
+	addAndMakeVisible(closeToTarget);
+	closeToTarget.setText("You are close to the target!", dontSendNotification);
+
 	addAndMakeVisible(startButton);
 	startButton.setButtonText("Begin");
 	startButton.changeWidthToFitText();
 	startButton.onClick = [this]
 	{
 		processor.beginSoundTask();
+		processor.mapTargetDistance(mainTaskSlider.getValue());
 		startButton.setVisible(false);
 		pressSpace.setVisible(true);
 	};
@@ -168,6 +175,21 @@ void SliderSonificationExpAudioProcessorEditor::timerCallback()
 
 	if (currentScreenState == 2 && processor.timeLeft <= 0)
 		processor.handleProceedButton();
+
+	if (currentScreenState == 2 && processor.isTraining)
+		trainingOrTask.setText("Training Phase",dontSendNotification);
+
+	if (processor.taskInProgress && processor.isTraining && fabs(processor.current_ErrorPercent) < 2)
+		closeToTarget.setVisible(true);
+	else
+		closeToTarget.setVisible(false);
+
+	if (processor.trainingDone && !startButton.isVisible() && !processor.taskInProgress)
+	{
+		startButton.setVisible(true);
+		mainTaskSlider.setValue(0);
+		trainingOrTask.setText("Testing Phase", dontSendNotification);
+	}
 
 	if (processor.sonificationsElapsed >= processor.totalSonifications)
 	{
@@ -328,6 +350,7 @@ void SliderSonificationExpAudioProcessorEditor::toggle_S2(bool on)
 	startButton.setVisible(on);
 	targetHint.setVisible(on);
 	next.setVisible(!on);
+	trainingOrTask.setVisible(on);
 	if (on)
 	{
 		if (!isDanish)
@@ -365,6 +388,8 @@ void SliderSonificationExpAudioProcessorEditor::resized()
 	startButton.setBounds(150, 150, 100, 40);
 	targetHint.setBounds(225, 90, 450, 40);
 	pressSpace.setBounds(250, 250, 400, 40);
+	closeToTarget.setBounds(250, 230, 300, 40);
+	trainingOrTask.setBounds(500, 50, 200, 40);
 
 	//Interface Screen 3
 	instructions_S3.setBounds(50, 50, 600, 40);

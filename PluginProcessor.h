@@ -141,6 +141,8 @@ public:
 
 	//Interface // 3 Screen Types - Details, Sonification Test, Aesthetic Rating
 	short interfaceState = 1;
+	bool isTraining = false;
+	bool trainingDone = false;
 	float timeLimit = 30;
 	float timeLeft = 0;
 	short currentSonificationIndex = 0;

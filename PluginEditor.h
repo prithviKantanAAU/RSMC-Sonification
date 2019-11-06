@@ -51,6 +51,9 @@ private:
 	Label genderLabel; TextEditor genderField;
 
 	//Interface Screen 2
+	Label trainingOrTask;
+	Label closeToTarget;
+
 	Label instructions_S2;
 	Label timeLeft;
 	Slider mainTaskSlider;

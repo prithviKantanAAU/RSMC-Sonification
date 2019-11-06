@@ -186,6 +186,7 @@ void SliderSonificationExpAudioProcessor::hiResTimerCallback()
 		timeElapsed += 0.001;
 		pulsesElapsed += 1;
 		pulsesElapsed = pulsesElapsed % 100;
+		if (!isTraining)
 		timeLeft -= 0.001;
 
 		if (spaceBarContinue.isKeyCurrentlyDown(KeyPress::spaceKey))
@@ -331,7 +332,7 @@ void SliderSonificationExpAudioProcessor::toggleTrackMuteManual(bool muted, shor
 
 void SliderSonificationExpAudioProcessor::handleProceedButton()
 {
-	if (timeLeft == timeLimit)
+	if (timeLeft == timeLimit && !isTraining)
 		return;
 
 	switch (interfaceState)
@@ -340,6 +341,7 @@ void SliderSonificationExpAudioProcessor::handleProceedButton()
 		if (participantName != "" && participantAge != 0 && participantMSoph != 0)
 		{
 			interfaceState = 2;
+			isTraining = true;
 			 getNewSonificationIndex();
 			getNewTargetValue();
 			chooseRandomMusicFile();
@@ -348,15 +350,28 @@ void SliderSonificationExpAudioProcessor::handleProceedButton()
 		break;
 	case 2:
 		taskInProgress = false;
-		dspFaust.stop();
-		storeTaskPerformance();
-		interfaceState = 3;
+		if (isTraining)
+		{
+			isTraining = false;
+			trainingDone = true;
+			timeLeft = timeLimit;
+			dspFaust.stop();
+			getNewTargetValue();
+		}
+		else
+		{
+			dspFaust.stop();
+			storeTaskPerformance();
+			interfaceState = 3;
+			trainingDone = false;
+		}
 		break;
 	case 3:
 		storeAestheticRating();
 		sonificationsElapsed++;
 		timeLeft = timeLimit;
 		interfaceState = 2;
+		isTraining = true;
 
 		if (sonificationsElapsed == totalSonifications)
 		{
