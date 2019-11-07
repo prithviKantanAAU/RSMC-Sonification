@@ -492,11 +492,17 @@ void SliderSonificationExpAudioProcessor::storeTaskPerformance()
 void SliderSonificationExpAudioProcessor::storeAestheticRating()
 {
 	task_aestheticRatings[currentSonificationIndex - 1] = current_AestheticRating;
+	task_longevityRatings[currentSonificationIndex - 1] = current_LongevityRating;
 }
 
 void SliderSonificationExpAudioProcessor::setAestheticRating(float sliderValue)
 {
 	current_AestheticRating = sliderValue;
+}
+
+void SliderSonificationExpAudioProcessor::setLongevityRating(float sliderValue)
+{
+	current_LongevityRating = sliderValue;
 }
 
 void SliderSonificationExpAudioProcessor::saveData()
@@ -515,13 +521,13 @@ void SliderSonificationExpAudioProcessor::saveData()
 	expOutcomes = fopen(path.c_str(), "w");
 
 	std::string format_Header = "%s,%d,%s,%d,\n";  //Name,Age,Sex,OMSI
-	std::string format_Body = "%f,%f,%d,%d,\n";			   //ErrorPercent,TimeTaken,NumOvershoots,AestheticRating
+	std::string format_Body = "%f,%f,%d,%d,%d,\n";			   //ErrorPercent,TimeTaken,NumOvershoots,AestheticRating,LongevityRating
 
 	fprintf(expOutcomes, format_Header.c_str(), participantName, participantAge, participantGender, participantMSoph);
 	for (int i = 0; i < totalSonifications; i++)
 	{
 		fprintf(expOutcomes, format_Body.c_str(), 
-			task_ErrorPercent[i],task_timeTaken[i],task_numOvershoots[i],task_aestheticRatings[i]);
+			task_ErrorPercent[i],task_timeTaken[i],task_numOvershoots[i],task_aestheticRatings[i],task_longevityRatings[i]);
 	}
 	fclose(expOutcomes);
 }

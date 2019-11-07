@@ -69,8 +69,6 @@ public:
 
 	Sequencer sequencer;
 	void handleNewClockPulse();
-	void applyTimingSwing();
-	//void applyVelocitySwing(int value, float percent);
 
 	// Current Music Info // 0 : Vel // 1 : Scale Degree // 2 : Octave (Mel) OR Type (Chord) 
 	short chordInfo[3] = { 0 };
@@ -93,8 +91,6 @@ public:
 
 	//Sonification
 	bool paramMapped[10][3] = { false };
-	void setParamOn(int category, int index, bool value);
-	void mapDistance(float value);
 
 	//Sonification
 	short numCategories_Targetless = 3;
@@ -161,6 +157,7 @@ public:
 	int task_numOvershoots[50] = { 0 };
 	float task_timeTaken[50] = { 0.0 };
 	int task_aestheticRatings[50] = { 0 };
+	int task_longevityRatings[50] = { 0 };
 	int sonificationIndexes_Elapsed[50] = { 0 };
 
 	bool taskInProgress = false;
@@ -170,6 +167,7 @@ public:
 	float errorPercent_Prev = 0.0;
 	float current_TimeElapsed = 0.0;
 	int current_AestheticRating = 0;
+	int current_LongevityRating = 0;
 	void beginSoundTask();
 	void checkOvershoot(float currentSliderValue)
 	{
@@ -183,6 +181,7 @@ public:
 	void storeParticipantDetails(String name, String age, String omsi, String gender);
 	void storeTaskPerformance();
 	void setAestheticRating(float sliderValue);
+	void setLongevityRating(float sliderValue);
 	void storeAestheticRating();
 	void saveData();
 
@@ -192,7 +191,7 @@ public:
 	void initializeMapping();
 	std::string currentMappingString = "";
 	bool isPositivePolarityTraditional[18] = { true, true, true, true, true, true, true, true, true };
-	bool isPositivePolarityMusical[18] = { true, true, true, true, true, true, true, false, false };
+	bool isPositivePolarityMusical[18] = { true, true, true, true, true, true, true, true, true };
 	float mappingFunctionTypes[18] =
 	{
 		1,			//Mel Tonic

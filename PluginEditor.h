@@ -63,9 +63,12 @@ private:
 	Label pressSpace;
 
 	//Interface Screen 3
+	Label errorFeedback;
 	Label instructions_S3;
 	Slider aestheticRating;
 	Label aestheticRatingLabel;
+	Slider aestheticRating2;
+	Label aestheticRating2Label;
 
 	Label taskNotCompletedWarning;
 	void toggleTaskNotCompletedWarning(bool on);
@@ -91,8 +94,8 @@ private:
 		"HINT: The target is the point where the TUNE IS MOST CLEAR",
 		"HINT: The target is the point where melody VOLUME IS MOST STABLE",
 		"HINT: The target is the point where melody IS LEAST DISTORTED",
-		"HINT: The target is the point where the sound effect is STRONGEST",
-		"HINT: The target is the point where the wah wah effect is STRONGEST",
+		"HINT: The target is the point where the sound effect is NOT HEARD",
+		"HINT: The target is the point where the wah wah effect is NOT HEARD",
 
 		"HINT: The target is the point where the wave pitch is LOWEST",
 		"HINT: The target is the point where the sound is SOFTEST",
@@ -114,8 +117,8 @@ private:
 		"ANTYDNING: Maalet er det point, hvor melodien er KLAREST",
 		"ANTYDNING: Maalet er det point, hvor melodiens LYDSTYRKE ER MEST STABIL",
 		"ANTYDNING: Maalet er det point, hvor melodien ER MINDST FORVRAENGET",
-		"ANTYDNING: Maalet er det point, hvor lydeffekten er STAERKEST",
-		"ANTYDNING: Maalet er det point, hvor wah-wah effekten er STAERKEST",
+		"ANTYDNING: Maalet er det point, hvor lydeffekten IKKE er HOERT",
+		"ANTYDNING: Maalet er det point, hvor wah-wah effekten IKKE er HOERT",
 
 		"ANTYDNING: Maalet er det point, hvor tonehoejden er LAVEST",
 		"ANTYDNING: Maalet er det point, hvor lydstyrken er LAVEST",

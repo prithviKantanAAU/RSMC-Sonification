@@ -426,7 +426,7 @@ and 1 otherwise.
 
 
 ### `void allNotesOff()`
-Gently terminates all the active voices.
+Immediately terminate all the active voices.
 
 
 ---
@@ -564,7 +564,7 @@ id.
 ---
 
 
-### `void setVoiceParamValue(const char* address, long voice, float value)`
+### `void setVoiceParamValue(const char* address, uintptr_t voice, float value)`
 Set the value of one of the parameters of the Faust
 
 object in function of its address (path) for a

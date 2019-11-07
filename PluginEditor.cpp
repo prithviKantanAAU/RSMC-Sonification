@@ -139,7 +139,22 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 
 	//Interface Screen 3
 	addAndMakeVisible(instructions_S3);
-	instructions_S3.setText("Please tell us how pleasant the auditory guidance sounded:",dontSendNotification);
+	instructions_S3.setText("Well Done! You were " + std::to_string(100 - fabs(processor.current_ErrorPercent)) + "% correct.",dontSendNotification);
+	instructions_S3.setColour(Label::textColourId, Colours::yellow);
+
+	addAndMakeVisible(errorFeedback);
+
+	addAndMakeVisible(aestheticRating2);
+	aestheticRating2.setRange(1, 7, 1);
+	aestheticRating2.setNumDecimalPlacesToDisplay(0);
+	aestheticRating2.setValue(4);
+	aestheticRating2.onValueChange = [this]
+	{
+		processor.setLongevityRating(aestheticRating2.getValue());
+	};
+	addAndMakeVisible(aestheticRating2Label);
+	aestheticRating2Label.setText("1 = Would use for min time \n7 = Would use for max time", dontSendNotification);
+	aestheticRating2Label.attachToComponent(&aestheticRating2, true);
 
 	addAndMakeVisible(aestheticRating);
 	aestheticRating.setRange(1, 7, 1);
@@ -150,7 +165,7 @@ void SliderSonificationExpAudioProcessorEditor::configureUI()
 		processor.setAestheticRating(aestheticRating.getValue());
 	};
 	addAndMakeVisible(aestheticRatingLabel);
-	aestheticRatingLabel.setText("Pleasantness Rating", dontSendNotification);
+	aestheticRatingLabel.setText("1 = Very Unpleasant \n7 = Very Pleasant", dontSendNotification);
 	aestheticRatingLabel.attachToComponent(&aestheticRating, true);
 
 	addAndMakeVisible(taskNotCompletedWarning);
@@ -234,8 +249,9 @@ void SliderSonificationExpAudioProcessorEditor::setLabels_English()
 	timeLeft.setText("Time remaining: " + std::to_string((int)processor.timeLeft) + " sec", dontSendNotification);
 	mainTaskSliderLabel.setText("Adjust:", dontSendNotification);
 	startButton.setButtonText("Begin");
-	instructions_S3.setText("Please tell us how pleasant the auditory guidance sounded:", dontSendNotification);
-	aestheticRatingLabel.setText("Pleasantness Rating", dontSendNotification);
+	instructions_S3.setText("Well Done! You were " + std::to_string(100 - fabs(processor.current_ErrorPercent)) + "% correct.", dontSendNotification);
+	aestheticRatingLabel.setText("1 = Very Unpleasant \n7 = Very Pleasant", dontSendNotification);
+	aestheticRating2Label.setText("1 = Would use for minimum time \n7 = Would use for maximum time", dontSendNotification);
 	taskNotCompletedWarning.setText("Task not yet completed.", dontSendNotification);
 	conclusionLabel.setText("Experiment Complete!", dontSendNotification);
 	language.setText("English", dontSendNotification);
@@ -275,6 +291,7 @@ void SliderSonificationExpAudioProcessorEditor::showConclusionScreen()
 	timeLeft.setVisible(false);
 	mainTaskSlider.setVisible(false);
 	startButton.setVisible(false);
+	trainingOrTask.setVisible(false);
 	instructions_S2.setVisible(false);
 	instructions_S3.setVisible(false);
 	aestheticRating.setVisible(false);
@@ -282,6 +299,9 @@ void SliderSonificationExpAudioProcessorEditor::showConclusionScreen()
 	targetHint.setVisible(false);
 	conclusionLabel.setVisible(true);
 	pressSpace.setVisible(false);
+	errorFeedback.setVisible(false);
+	aestheticRating2.setVisible(false);
+	aestheticRating2Label.setVisible(false);
 }
 
 void SliderSonificationExpAudioProcessorEditor::updateTimeRemaining()
@@ -293,6 +313,7 @@ void SliderSonificationExpAudioProcessorEditor::updateTimeRemaining()
 			+ std::to_string(processor.sonificationsElapsed) + "/" + std::to_string(processor.totalSonifications)
 			, dontSendNotification);
 		timeLeft.setText("Time remaining: " + std::to_string((int)processor.timeLeft) + " sec", dontSendNotification);
+		instructions_S3.setText("Well Done! You were " + std::to_string(100 - fabs(processor.current_ErrorPercent)) + "% correct. Now please rate:", dontSendNotification);
 	}
 	else
 	{
@@ -300,6 +321,7 @@ void SliderSonificationExpAudioProcessorEditor::updateTimeRemaining()
 			+ std::to_string(processor.sonificationsElapsed) + "/" + std::to_string(processor.totalSonifications)
 			, dontSendNotification);
 		timeLeft.setText("Resterende Tid: " + std::to_string((int)processor.timeLeft) + " sec", dontSendNotification);
+		instructions_S3.setText("Det var godt! Du havde " + std::to_string(100 - fabs(processor.current_ErrorPercent)) + "% ret. Bedoem venligst:", dontSendNotification);
 	}
 
 }
@@ -324,6 +346,7 @@ void SliderSonificationExpAudioProcessorEditor::toggleScreenState(short currentS
 		toggle_S2(false);
 		toggle_S3(true);
 		aestheticRating.setValue(4, dontSendNotification);
+		aestheticRating2.setValue(4, dontSendNotification);
 		break;
 	}
 }
@@ -367,6 +390,8 @@ void SliderSonificationExpAudioProcessorEditor::toggle_S3(bool on)
 	instructions_S3.setVisible(on);
 	aestheticRating.setVisible(on);
 	aestheticRatingLabel.setVisible(on);
+	errorFeedback.setVisible(on);
+	aestheticRating2.setVisible(on);
 }
 
 void SliderSonificationExpAudioProcessorEditor::resized()
@@ -393,7 +418,8 @@ void SliderSonificationExpAudioProcessorEditor::resized()
 
 	//Interface Screen 3
 	instructions_S3.setBounds(50, 50, 600, 40);
-	aestheticRating.setBounds(350, 150, 400, 40);
+	aestheticRating.setBounds(350, 80, 400, 40);
+	aestheticRating2.setBounds(350, 160, 400, 40);
 
 	conclusionLabel.setBounds(320, 150, 160, 40);
 	taskNotCompletedWarning.setBounds(25, 150, 100, 40);
