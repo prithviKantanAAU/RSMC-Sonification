@@ -102,15 +102,15 @@ private:
 		"HINT: The target is the point where the beeps are FASTEST",
 		"HINT: The target is the point where the sound is BRIGHTEST",
 		"HINT: The target is the point where the VOLUME IS MOST STABLE",
-		"HINT: The target is the point where the BEEPS ARE IN SYNC",
-		"HINT: The target is the point where the sound is least DISSONANT",
+		"HINT: The target is the point where only ONE beep can be heard",
+		"HINT: The target is the point where the sound is least DISSONANT/ROUGH",
 		"HINT: The target is the point where the sound is MOST STABLE",
 		"HINT: The target is the point where the sound is MOST STABLE",
 	};
 
 	std::string targetHintsDanish[30] =
 	{
-		"ANTYDNING: Maalet er det point, hvor melodiens tonehoejde er LAVEST",
+		"ANTYDNING: Maalet er det point, hvor melodien er DYBEST",
 		"ANTYDNING: Maalet er det point, hvor melodien er HOEJEST",
 		"ANTYDNING: Maalet er det point, hvor melodien lyder LYSEST",
 		"ANTYDNING: Maalet er det point, hvor trommerne er MEST SYNKRONISERET",
@@ -125,8 +125,8 @@ private:
 		"ANTYDNING: Maalet er det point, hvor bipperne er HURTIGST",
 		"ANTYDNING: Maalet er det point, hvor lyden er LYSEST",
 		"ANTYDNING: Maalet er det point, hvor lydstyrken er MEST STABIL",
-		"ANTYDNING: Maalet er det point, hvor bipperne er MEST SYNKRONISERET",
-		"ANTYDNING: Maalet er det point, hvor lyden er er MINDST DISSONANT",
+		"ANTYDNING: Maalet er det point, hvor kun EN BIP kan hoeres",
+		"ANTYDNING: Maalet er det point, hvor lyden er er MINDST DISSONANT/BARSK",
 		"ANTYDNING: Maalet er det point, hvor lyden er MEST STABIL",
 		"ANTYDNING: Maalet er det point, hvor lyden er MEST STABIL"
 	};

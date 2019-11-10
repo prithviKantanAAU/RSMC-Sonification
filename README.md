@@ -212,9 +212,11 @@ In case you would like to use the the built-in accelerometer or gyroscope of you
 * **157**: `/RSMC_noSideChain/Mapping_Tabs/Sonification_Types/Reference_Strategies/x_R2_Inharmonicity`
 * **158**: `/RSMC_noSideChain/Mapping_Tabs/Sonification_Types/Reference_Strategies/x_R3_Tremolo`
 * **159**: `/RSMC_noSideChain/Mapping_Tabs/Sonification_Types/Reference_Strategies/x_R4_Distortion`
-* **160**: `/RSMC_noSideChain/Mapping_Tabs/Sonification_Types/Traditional_Strategies/Choice_Traditional`
-* **161**: `/RSMC_noSideChain/Mapping_Tabs/Sonification_Types/Traditional_Strategies/x_Traditional`
-* **162**: `/RSMC_noSideChain/Master_Clock`
+* **160**: `/RSMC_noSideChain/Mapping_Tabs/Sonification_Types/Reference_Strategies/x_Trans1_Pitched`
+* **161**: `/RSMC_noSideChain/Mapping_Tabs/Sonification_Types/Reference_Strategies/x_Trans2_Whoosh`
+* **162**: `/RSMC_noSideChain/Mapping_Tabs/Sonification_Types/Traditional_Strategies/Choice_Traditional`
+* **163**: `/RSMC_noSideChain/Mapping_Tabs/Sonification_Types/Traditional_Strategies/x_Traditional`
+* **164**: `/RSMC_noSideChain/Master_Clock`
 
 
 ## API Reference
